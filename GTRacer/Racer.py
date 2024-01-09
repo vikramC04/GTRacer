@@ -33,10 +33,10 @@ class Racecar(pygame.sprite.Sprite):
         pressed = pygame.key.get_pressed()
         delay_interval = int(pygame.time.get_ticks()) - self.last_clicked
         if delay_interval > 200:
-            if pressed[pygame.K_d] and self.racecar_index != self.last_index:
+            if (pressed[pygame.K_d] or pressed[pygame.K_RIGHT])  and self.racecar_index != self.last_index:
                 self.racecar_index += 1
                 self.last_clicked = int(pygame.time.get_ticks())    
-            elif pressed[pygame.K_a] and self.racecar_index != 0:
+            elif (pressed[pygame.K_a] or pressed[pygame.K_LEFT])  and self.racecar_index != 0:
                 self.racecar_index -= 1
                 self.last_clicked = int(pygame.time.get_ticks())
         
@@ -146,5 +146,4 @@ while True:
 
     pygame.display.update()
     clock.tick(60)
-
 
