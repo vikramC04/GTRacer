@@ -56,7 +56,7 @@ class Obstacle(pygame.sprite.Sprite):
          
         self.rect = self.image.get_rect(center = (choice([250,700,1175]), -200))
     def movement(self):
-        self.rect.y += 5
+        self.rect.y += 10
     def end_task(self):
         if self.rect.y >= 800: self.kill()
     def update(self):
@@ -76,10 +76,23 @@ def score():
     screen.blit(score_text, score_text_rect)
     return current_score
 
+def background_scroll():
+    global position
+    screen.blit(racetrack_surf, (0,position))
+    screen.blit(racetrack_surf, (0, position -racetrack_surf.get_height()))
+    position += movement_constant
+
+    if abs(position) > racetrack_surf.get_height():
+        position = 0
+
+
 pygame.init()
 screen = pygame.display.set_mode((1427,715))
 pygame.display.set_caption('GTRacer')
 clock = pygame.time.Clock()
+
+position = 0
+movement_constant = 5
 
 game_font = pygame.font.Font('font/racesport.ttf', 50)
 title_text = game_font.render("GTRacer", False, (255,255,255))
@@ -94,7 +107,8 @@ helmet = pygame.image.load('graphics/helmet.png').convert_alpha()
 title_helmet = pygame.transform.rotozoom(helmet, 0, 0.7)
 title_helmet_rect = title_helmet.get_rect(center = (713, 355))
 
-racetrack_surf = pygame.image.load('graphics/racetrack.png').convert_alpha() 
+racetrack_surf = pygame.image.load('graphics/racetrack.png').convert_alpha()
+racetrack_surf_rect =  racetrack_surf.get_rect(topleft = (0,0))
 racer = pygame.sprite.GroupSingle()
 racer.add(Racecar())
 
@@ -102,6 +116,9 @@ obstacle = pygame.sprite.Group()
 
 obstacle_timer = pygame.USEREVENT + 1
 pygame.time.set_timer(obstacle_timer, 1500)
+
+movement_timer = pygame.USEREVENT + 2
+pygame.time.set_timer(movement_timer, 10000)
 
 game_start = False
 start_time = 0
@@ -118,14 +135,18 @@ while True:
         if game_start:
             if event.type == obstacle_timer:
                 obstacle.add(Obstacle(choice(["rock", "trash"])))
+            if event.type == movement_timer:
+                movement_constant += 2
         else:
             if event.type == pygame.KEYDOWN:
                 game_start = True
                 start_time = int(pygame.time.get_ticks()/1000)
+                movement_constant = 5
                 
            
     if game_start:
-        screen.blit(racetrack_surf, (0,0))
+        background_scroll()
+        #screen.blit(racetrack_surf, racetrack_surf_rect)
         racer.draw(screen)
         racer.update()
         obstacle.draw(screen)
@@ -146,4 +167,3 @@ while True:
 
     pygame.display.update()
     clock.tick(60)
-
