@@ -146,7 +146,6 @@ while True:
            
     if game_start:
         background_scroll()
-        #screen.blit(racetrack_surf, racetrack_surf_rect)
         racer.draw(screen)
         racer.update()
         obstacle.draw(screen)
