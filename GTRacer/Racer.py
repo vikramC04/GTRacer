@@ -56,7 +56,7 @@ class Obstacle(pygame.sprite.Sprite):
          
         self.rect = self.image.get_rect(center = (choice([250,700,1175]), -200))
     def movement(self):
-        self.rect.y += 10
+        self.rect.y += movement_constant
     def end_task(self):
         if self.rect.y >= 800: self.kill()
     def update(self):
